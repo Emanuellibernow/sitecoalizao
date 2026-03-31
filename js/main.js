@@ -76,7 +76,7 @@ if (slider && slides.length > 0) {
   }
 
   function startAutoplay() {
-    autoplayInterval = setInterval(nextSlide, 4500);
+    autoplayInterval = setInterval(nextSlide, 7000);
   }
 
   function resetAutoplay() {
@@ -106,7 +106,6 @@ if (heroPhrases.length > 1) {
     heroPhrases[currentPhrase].classList.remove('phrase-active');
     heroPhrases[currentPhrase].classList.add('phrase-hidden');
     heroPhrases[currentPhrase].style.opacity = '0';
-    heroPhrases[currentPhrase].style.position = 'absolute';
     heroPhrases[currentPhrase].style.pointerEvents = 'none';
     
     currentPhrase = (nextIndex + heroPhrases.length) % heroPhrases.length;
@@ -114,7 +113,6 @@ if (heroPhrases.length > 1) {
     heroPhrases[currentPhrase].classList.remove('phrase-hidden');
     heroPhrases[currentPhrase].classList.add('phrase-active');
     heroPhrases[currentPhrase].style.opacity = '1';
-    heroPhrases[currentPhrase].style.position = 'relative';
     heroPhrases[currentPhrase].style.pointerEvents = 'auto';
   }
 
