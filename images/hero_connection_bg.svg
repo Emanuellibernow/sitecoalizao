@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" preserveAspectRatio="xMaxYMid slice">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#08A88E" stop-opacity="0" />
+      <stop offset="30%" stop-color="#08A88E" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#0387BB" stop-opacity="0.25" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1E9DD8" stop-opacity="0" />
+      <stop offset="100%" stop-color="#08A88E" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+
+  <g stroke="url(#grad1)" stroke-width="1.5" fill="none">
+    <path d="M 1000,100 C 700,50 600,300 300,450" />
+    <path d="M 1000,300 C 800,250 550,450 400,600" />
+    <path d="M 1000,500 C 850,550 750,250 450,150" />
+    <path d="M 1000,650 C 900,600 650,550 500,350" />
+    <path d="M 1000,200 C 800,200 700,100 500,50" />
+  </g>
+
+  <g stroke="url(#grad2)" stroke-width="1" fill="none">
+    <line x1="700" y1="211" x2="800" y2="331" />
+    <line x1="550" y1="337" x2="700" y2="442" />
+    <line x1="600" y1="168" x2="750" y2="250" />
+    <line x1="500" y1="350" x2="450" y2="150" />
+    <line x1="850" y1="117" x2="800" y2="200" />
+    <line x1="650" y1="500" x2="750" y2="380" />
+    <line x1="800" y1="522" x2="900" y2="618" />
+  </g>
+
+  <g fill="#08A88E" opacity="0.35">
+    <circle cx="700" cy="211" r="5" />
+    <circle cx="800" cy="331" r="4" />
+    <circle cx="550" cy="337" r="6" />
+    <circle cx="700" cy="442" r="4" />
+    <circle cx="600" cy="168" r="5" />
+    <circle cx="750" cy="250" r="3" />
+    <circle cx="500" cy="350" r="5" />
+    <circle cx="450" cy="150" r="7" />
+    <circle cx="850" cy="117" r="4" />
+    <circle cx="800" cy="200" r="5" />
+    <circle cx="650" cy="500" r="4" />
+    <circle cx="750" cy="380" r="6" />
+    
+    <circle cx="1000" cy="100" r="6" />
+    <circle cx="1000" cy="300" r="5" />
+    <circle cx="1000" cy="500" r="6" />
+    <circle cx="1000" cy="650" r="4" />
+    <circle cx="1000" cy="200" r="5" />
+  </g>
+
+  <g fill="#0387BB" opacity="0.3">
+    <circle cx="625" cy="285" r="2" />
+    <circle cx="775" cy="290" r="3" />
+    <circle cx="475" cy="250" r="2" />
+    <circle cx="525" cy="410" r="2" />
+    <circle cx="850" cy="460" r="3" />
+    <circle cx="900" cy="230" r="2" />
+    <circle cx="825" cy="158" r="2" />
+  </g>
+</svg>

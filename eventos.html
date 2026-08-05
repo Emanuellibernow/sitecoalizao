@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos Realizados | Coalizão Consultoria</title>
+  <meta name="description"
+    content="Histórico de eventos, capacitações e palestras realizadas pela equipe da Coalizão Consultoria." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <meta name="theme-color" content="#023678">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Estilos Específicos para a Página de Eventos */
+    .events-hero {
+      padding: 120px 0 60px 0;
+      background: radial-gradient(circle at 12% 20%, rgba(14, 143, 90, 0.06), transparent 30%),
+        radial-gradient(circle at 84% 30%, rgba(2, 54, 120, 0.08), transparent 28%),
+        var(--surface-light);
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .timeline-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .event-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+    }
+
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .event-card:hover::before {
+      opacity: 1;
+    }
+
+    .event-header {
+      padding: 32px 40px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #fafafa);
+    }
+
+    .event-header h3 {
+      font-size: 26px;
+      margin: 12px 0 16px;
+      line-height: 1.3;
+    }
+
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 32px;
+      color: var(--gray);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .event-meta div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .event-meta strong {
+      color: var(--green);
+    }
+
+    .event-body {
+      padding: 32px 40px;
+    }
+
+    .event-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .event-gallery img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.5s ease;
+    }
+
+    .event-gallery div {
+      overflow: hidden;
+      border-radius: 12px;
+      background: #f1f4f3;
+    }
+
+    .event-gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Lightbox Styles */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(18, 34, 18, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      object-fit: contain;
+    }
+
+    .lb-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 48px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: transform 0.2s;
+    }
+
+    .lb-close:hover {
+      transform: scale(1.1);
+    }
+
+    .lb-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .lb-nav:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .lb-prev {
+      left: 24px;
+    }
+
+    .lb-next {
+      right: 24px;
+    }
+
+    .event-gallery img {
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+
+      .event-header,
+      .event-body {
+        padding: 24px;
+      }
+
+      .event-header h3 {
+        font-size: 20px;
+      }
+
+      .event-meta {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .event-gallery {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand" aria-label="Coalizão Consultoria">
+        <img src="logo_coalizao/02.png" alt="Coalizão Consultoria" class="brand-logo" />
+      </a>
+
+      <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav id="main-nav" class="main-nav">
+        <a href="index.html#inicio"><b>INÍCIO</b></a>
+        <a href="index.html#sobre"><b>SOBRE</b></a>
+        <a href="index.html#pilares"><b>PILARES</b></a>
+        <a href="index.html#solucoes"><b>SOLUÇÕES</b></a>
+        <a href="index.html#atuacao"><b>ATUAÇÃO</b></a>
+        <a href="index.html#segmentos"><b>SEGMENTOS</b></a>
+        <a href="index.html#depoimentos"><b>DEPOIMENTOS</b></a>
+        <a href="index.html#time"><b>TIME</b></a>
+        <a href="#eventos-history"><b>EVENTOS</b></a>
+        <a href="index.html#contato" class="btn btn-primary nav-cta">CONTATO</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="events-hero">
+      <div class="container reveal">
+        <span class="eyebrow" style="color: var(--teal);">Histórico de Capacitação</span>
+        <h1 style="color: var(--green);">Eventos Realizados</h1>
+        <p style="max-width: 640px; margin: 16px auto 0; font-size: 18px;">Conhecimento teórico e prático elevado ao
+          nível de campo. Uma jornada de compartilhamento técnico promovida por nossos especialistas.</p>
+      </div>
+    </section>
+
+    <!-- TIMELINE DE EVENTOS -->
+    <section id="eventos-history" class="section section-soft" style="padding-top: 0;">
+      <div class="container timeline-container">
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>PALESTRA NO ENCONTRO FÉ & NEGÓCIOS</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Me. Paulo Amaral</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Olinda Park Hotel, Toledo, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>03/11/2026</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/74.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/75.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/98.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/99.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>PALESTRA NO AUTO CONNECT - AUTÓDROMO DE INTERLAGOS </h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Me. Paulo Amaral</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Autódromo de Interlagos, São Paulo, SP </span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>14/04/2024</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/76.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/77.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/78.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>IMERSÃO SA36 2 ED. (AGRICULTURA SUSTENTÁVEL E REGENERATIVA)</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Ademir Calegari, Celso Tomita, Lindomar Assi, Ronaldo Hojo, Arthur de Canini, Odair
+                    Frigotto, Ivo Frare, Laercio Dalla Vecchia, Roberto Malipence, Paulo Amaral</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>11,12,21 e 22/04/2023</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/80.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/81.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/82.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/83.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/84.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/85.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/86.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/87.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/88.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/89.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/90.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/91.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/92.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/93.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/94.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/95.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/96.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/97.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>IMERSÃO SA36 1 ED. (SUSTENTABILIDADE NA AGRICULTURA) </h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Ademir Calegari, Celso Tomita, Lindomar Assi, Ronaldo Hojo, Arthur de
+                    Canini</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>31/10 a 12/11/2022</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/100.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/101.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/102.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/103.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/104.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/105.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/106.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/107.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/108.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/109.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/110.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/111.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/112.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/113.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/114.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/115.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/116.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/117.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/118.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/119.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/120.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/121.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/122.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/123.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/124.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/125.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>COORDENAÇÃO GERAL E PALESTRA NO FÓRUM ERVA-MATE PARANÁ 2030</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Me. Paulo Amaral</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Mercado Municipal de Curitiba, Curitiba, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>14/10/2022</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/126.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/127.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/128.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/129.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/130.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/131.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/132.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/133.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/134.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/135.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/136.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/137.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/138.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/139.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/140.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>PALESTRA E COORDENAÇÃO DA REESTRUTURAÇÃO ASSOCIATIVA NO SEMINÁRIO DA APROJAPE</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Me. Paulo Amaral</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Hotel Fazenda Bela Vista, Dourado, SP</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>18/09/2021</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/141.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/142.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/143.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/144.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/145.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/146.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/147.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/148.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MENTORIA JORNADA PRODUÇÃO SUSTENTÁVEL (Turma 04)</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita, Dr. Lindomar Assi</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Patrocínio, MG e Perdizes, MG</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>09/2020 a 01/2021</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/53.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/54.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/55.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/56.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/57.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/58.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/59.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MENTORIA JORNADA PRODUÇÃO SUSTENTÁVEL (Turma 03)</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita, Dr. Lindomar Assi</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Patrocínio, MG e Guarapuava, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>05/2021 a 09/2021</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/61.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/62.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/63.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/64.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/65.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/66.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MENTORIA JORNADA PRODUÇÃO SUSTENTÁVEL (Turma 02)</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita, Dr. Lindomar Assi</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Guarapuava, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>09/2020 a 01/2021</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/67.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/68.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/69.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/70.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/71.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/72.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/73.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Guarapuava, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>21 a 22/01/2021</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/47.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/48.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/49.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/50.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/51.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/52.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MULTIPLICAÇÃO DE MICRORGANISMOS ON FARM</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Lindomar Assi, Dr. Ivan Werncke, Dr. Jeferson Klein, Dr. Rafael
+                    Adamzuck</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Cascavel, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>08 a 12/12/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/45.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/46.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Guarapuava, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>02 e 03/12/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/43.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/44.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>PRODUÇÃO SUSTENTÁVEL E USO DO TMT</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita, Dr. Lindomar Assi</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Guaíra, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>22 e 23/10/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/39.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/40.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/41.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/42.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Guaíra, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>20 e 21/10/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/34.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/35.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/36.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/37.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/38.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MULTIPLICAÇÃO DE MICRORGANISMOS ON FARM</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Lindomar Assi, Dr. Jeferson Klein, Dr. Rafael Adamzuck</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Cascavel, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>22/08 a 19/09/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/28.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/29.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/30.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/31.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/32.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/33.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong></span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Cascavel, PR</span>
+              </div>
+              <div style="width: 100%;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>12 e 13/08/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery" style="grid-template-columns: repeat(3, 1fr);">
+              <div><img src="imagens_alteradas/20.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/21.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/22.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/23.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/24.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/25.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/26.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/27.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong></span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo, PR</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>18 e 19/02/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery">
+              <div><img src="imagens_alteradas/13.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/14.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/15.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/16.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/17.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/18.webp" alt="TMT e Produção" loading="lazy"></div>
+              <div><img src="imagens_alteradas/19.webp" alt="TMT e Produção" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>MULTIPLICAÇÃO DE MICRORGANISMOS ON FARM</h3>
+            <div class="event-meta">
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Lindomar Assi</strong></span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo, PR</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>10 e 11/01/2020</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery">
+              <div><img src="imagens_alteradas/08.webp" alt="Foto da multiplicação" loading="lazy"></div>
+              <div><img src="imagens_alteradas/09.webp" alt="Foto da multiplicação" loading="lazy"></div>
+              <div><img src="imagens_alteradas/10.webp" alt="Foto da multiplicação" loading="lazy"></div>
+              <div><img src="imagens_alteradas/11.webp" alt="Foto da multiplicação" loading="lazy"></div>
+              <div><img src="imagens_alteradas/12.webp" alt="Foto da multiplicação" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow">Café com palestra</span>
+            <h3>BACILLUS THURINGIENSIS EM ATIVIDADES AGROAMBIENTAIS</h3>
+            <div class="event-meta">
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dra. Rose Monnerat</strong></span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo PR</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>11/10/2019 </span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery">
+              <div><img src="imagens_alteradas/04.webp" alt="Foto da dinâmica biológica" loading="lazy"></div>
+              <div><img src="imagens_alteradas/05.webp" alt="Foto da dinâmica biológica" loading="lazy"></div>
+              <div><img src="imagens_alteradas/06.webp" alt="Foto da dinâmica biológica" loading="lazy"></div>
+              <div><img src="imagens_alteradas/07.webp" alt="Foto da dinâmica biológica" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="event-card reveal">
+          <div class="event-header">
+            <span class="eyebrow"></span>
+            <h3>DINÂMICA BIOLÓGICA E NUTRIÇÃO DAS PLANTAS</h3>
+            <div class="event-meta">
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span><strong>Dr. Celso Tomita</strong> (Embrapa)</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Toledo, PR</span>
+              </div>
+              <div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>19 e 20/09/2019</span>
+              </div>
+            </div>
+          </div>
+          <div class="event-body">
+            <div class="event-gallery">
+              <div><img src="imagens_alteradas/01.webp" alt="Foto do evento" loading="lazy"></div>
+              <div><img src="imagens_alteradas/02.webp" alt="Foto do evento" loading="lazy"></div>
+              <div><img src="imagens_alteradas/03.webp" alt="Foto do evento" loading="lazy"></div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- FOOTER DA MESMA PÁGINA INÍCIO -->
+    <!-- FOOTER COMPACTO COM MAPA -->
+    <footer class="site-footer" style="padding: 48px 0; border-top: 1px solid var(--line); background: white;">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Marca -->
+          <div>
+            <img src="logo_coalizao/Coalizão_logo_horizontal.png" alt="Coalizão Consultoria"
+              style="height: 48px; mix-blend-mode: multiply; margin-bottom: 20px;" />
+            <p style="font-size: 14px; line-height: 1.6;">Orientamos líderes que buscam prosperidade, combinando
+              técnica, visão sistêmica e conexão ativa.</p>
+          </div>
+          <!-- Contato e Endereço -->
+          <div>
+            <strong
+              style="display: block; margin-bottom: 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green);">Contato
+              & Sede</strong>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; line-height: 1.8;">
+              <li><a href="tel:+5545999589493" style="color: var(--gray); text-decoration: none;">(45) 9 9958 9493</a>
+              </li>
+              <li><a href="mailto:atendimento@coalizaoconsultoria.com"
+                  style="color: var(--gray); text-decoration: none;">atendimento@coalizaoconsultoria.com</a></li>
+              <li style="margin-top: 12px;">Rua Guarani, 2106 — Sala 11</li>
+              <li>Toledo, PR — CEP: 85902-330</li>
+            </ul>
+          </div>
+          <!-- Google Maps -->
+          <div style="width: 100%; height: 100%;">
+            <iframe
+              src="https://maps.google.com/maps?q=Rua%20Guarani,%202106%20-%20Toledo,%20PR&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%" height="200" style="border:0; border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.06);"
+              allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+        <div
+          style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
+          <p style="font-size: 13px;">&copy; 2026 Coalizão Consultoria. Todos os direitos reservados.</p>
+          <a href="#eventos-history"
+            style="font-size: 13px; font-weight: 600; color: var(--green); text-decoration: none;">Voltar ao topo
+            &uarr;</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Intersection Observer for Reveal Animation
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Menu Mobile Toggle
+      const menuBtn = document.querySelector('.menu-toggle');
+      const mainNav = document.getElementById('main-nav');
+      if (menuBtn && mainNav) {
+        menuBtn.addEventListener('click', () => {
+          const isOpen = mainNav.classList.toggle('open');
+          menuBtn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+
+      // Lightbox Logic
+      const lightbox = document.createElement('div');
+      lightbox.id = 'lightbox';
+      lightbox.className = 'lightbox';
+      lightbox.innerHTML = `
+        <button class="lb-close" aria-label="Fechar">&times;</button>
+        <button class="lb-nav lb-prev" aria-label="Anterior">&#10094;</button>
+        <img id="lightbox-img" src="" alt="Imagem Ampliada">
+        <button class="lb-nav lb-next" aria-label="Próximo">&#10095;</button>
+      `;
+      document.body.appendChild(lightbox);
+
+      const lbImg = document.getElementById('lightbox-img');
+      const closeBtn = lightbox.querySelector('.lb-close');
+      const prevBtn = lightbox.querySelector('.lb-prev');
+      const nextBtn = lightbox.querySelector('.lb-next');
+
+      let currentGallery = [];
+      let currentIndex = 0;
+
+      // Click event for all thumbnails in galleries
+      document.querySelectorAll('.event-gallery').forEach(gallery => {
+        const images = Array.from(gallery.querySelectorAll('img'));
+        images.forEach((img, index) => {
+          img.addEventListener('click', () => {
+            currentGallery = images.map(i => i.src);
+            currentIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+          });
+        });
+      });
+
+      function updateLightbox() {
+        if (currentGallery.length === 0) return;
+        lbImg.src = currentGallery[currentIndex];
+      }
+
+      closeBtn.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+      });
+
+      prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : currentGallery.length - 1;
+        updateLightbox();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex < currentGallery.length - 1) ? currentIndex + 1 : 0;
+        updateLightbox();
+      });
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) lightbox.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+
+</html>
